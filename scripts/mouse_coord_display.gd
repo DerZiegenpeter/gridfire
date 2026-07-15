@@ -33,7 +33,7 @@ func _process(_delta: float) -> void:
 
 	var height_text := "   H: ---m"
 	if terrain_sprite and terrain_sprite.has_method("get_height_meters"):
-		var h: float = terrain_generator.get_height_meters(Vector2(x, y))
+		var h: float = terrain_sprite.get_height_meters(world_pos)
 		height_text = "   H: %dm" % int(round(h))
 
 	text = utm_text + height_text
