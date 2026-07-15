@@ -25,39 +25,36 @@ func _draw() -> void:
     var major_px := int(major_grid_meters / meters_per_pixel)
     var minor_px := int(minor_grid_meters / meters_per_pixel)
 
-    # Minor Grid Lines (thin)
+    # Minor lines (subtle)
     for x in range(0, map_size.x + 1, minor_px):
-        var is_major := (x % major_px) == 0
-        if not is_major:
-            draw_line(Vector2(x, 0), Vector2(x, map_size.y), Color(0.0, 0.6, 0.3, 0.35), 1.0)
+        if x % major_px != 0:
+            draw_line(Vector2(x, 0), Vector2(x, map_size.y), Color(0.0, 0.7, 0.35, 0.4), 1.0)
 
     for y in range(0, map_size.y + 1, minor_px):
-        var is_major := (y % major_px) == 0
-        if not is_major:
-            draw_line(Vector2(0, y), Vector2(map_size.x, y), Color(0.0, 0.6, 0.3, 0.35), 1.0)
+        if y % major_px != 0:
+            draw_line(Vector2(0, y), Vector2(map_size.x, y), Color(0.0, 0.7, 0.35, 0.4), 1.0)
 
-    # Major Grid Lines (thick + bright)
+    # Major lines (strong)
     for x in range(0, map_size.x + 1, major_px):
-        draw_line(Vector2(x, 0), Vector2(x, map_size.y), Color(0.0, 1.0, 0.5, 0.9), 2.5)
+        draw_line(Vector2(x, 0), Vector2(x, map_size.y), Color(0.0, 1.0, 0.55, 0.95), 2.8)
         if x > 0:
             var east := int(utm_easting_base + x * meters_per_pixel)
-            draw_string(label_font, Vector2(x + 6, 18), str(east / 1000), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(0.3, 1.0, 0.6))
+            draw_string(label_font, Vector2(x + 5, 17), str(east / 1000), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.4, 1.0, 0.7))
 
     for y in range(0, map_size.y + 1, major_px):
-        draw_line(Vector2(0, y), Vector2(map_size.x, y), Color(0.0, 1.0, 0.5, 0.9), 2.5)
+        draw_line(Vector2(0, y), Vector2(map_size.x, y), Color(0.0, 1.0, 0.55, 0.95), 2.8)
         if y > 0:
             var north := int(utm_northing_base + (map_size.y - y) * meters_per_pixel)
-            draw_string(label_font, Vector2(6, y + 14), str(north / 1000), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(0.3, 1.0, 0.6))
+            draw_string(label_font, Vector2(5, y + 13), str(north / 1000), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0.4, 1.0, 0.7))
 
-    # Simple Contour Lines (Höhenlinien)
+    # Contour dots (more visible)
     if terrain_generator:
-        var contour_step_px := int(contour_step_meters / meters_per_pixel)
-        for x in range(0, map_size.x, contour_step_px):
-            for y in range(0, map_size.y, contour_step_px):
+        var step := int(contour_step_meters / meters_per_pixel)
+        for x in range(0, map_size.x, step):
+            for y in range(0, map_size.y, step):
                 var h := terrain_generator.get_height_meters(Vector2(x, y))
-                # Draw small markers or lines at height thresholds
-                if int(h) % 50 == 0:
-                    draw_circle(Vector2(x, y), 1.5, Color(1.0, 0.9, 0.3, 0.6))  # golden contour dots for now
+                if int(h) % 50 == 0 and int(h) > 100:
+                    draw_circle(Vector2(x, y), 2.2, Color(1.0, 0.85, 0.2, 0.85))  # brighter golden dots
 
 func world_to_utm_string(world_pos: Vector2) -> String:
     var east := int(utm_easting_base + world_pos.x * meters_per_pixel)

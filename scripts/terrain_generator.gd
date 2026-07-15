@@ -37,14 +37,14 @@ func generate_terrain() -> void:
             var h: float = noise_value * 0.5 + 0.5
 
             var color: Color
-            if h < 0.25:
-                color = Color(0.12, 0.28, 0.15)
-            elif h < 0.42:
-                color = Color(0.28, 0.45, 0.22)
-            elif h < 0.65:
-                color = Color(0.48, 0.42, 0.28)
+            if h < 0.3:
+                color = Color(0.05, 0.08, 0.05)      # very dark (valleys)
+            elif h < 0.5:
+                color = Color(0.12, 0.22, 0.10)
+            elif h < 0.7:
+                color = Color(0.25, 0.32, 0.18)
             else:
-                color = Color(0.42, 0.38, 0.33)
+                color = Color(0.35, 0.38, 0.25)      # brighter hills
 
             img.set_pixel(x, y, color)
 

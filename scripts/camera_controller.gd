@@ -3,15 +3,17 @@ extends Camera2D
 @export var pan_speed: float = 1100.0
 @export var zoom_speed: float = 0.1
 @export var min_zoom: float = 0.25
-@export var max_zoom: float = 3.5
+@export var max_zoom: float = 4.0
 @export var map_size: Vector2 = Vector2(2048, 2048)
+
+@export var free_panning: bool = true   # allow panning outside map
 
 var dragging := false
 var last_mouse_pos := Vector2.ZERO
 
 func _ready() -> void:
     position = map_size / 2.0
-    zoom = Vector2(0.65, 0.65)
+    zoom = Vector2(0.6, 0.6)
 
 func _unhandled_input(event: InputEvent) -> void:
     if event is InputEventMouseButton:
@@ -26,13 +28,13 @@ func _unhandled_input(event: InputEvent) -> void:
         var delta: Vector2 = event.position - last_mouse_pos
         position -= delta * (1.0 / zoom.x) * (pan_speed / 1000.0)
         last_mouse_pos = event.position
-        _clamp_camera()
+        if not free_panning:
+            _clamp_camera()
 
 func _adjust_zoom(factor: float) -> void:
     var new_zoom := zoom * factor
     new_zoom = new_zoom.clamp(Vector2(min_zoom, min_zoom), Vector2(max_zoom, max_zoom))
     zoom = new_zoom
-    _clamp_camera()
 
 func _clamp_camera() -> void:
     var viewport_size := get_viewport_rect().size
