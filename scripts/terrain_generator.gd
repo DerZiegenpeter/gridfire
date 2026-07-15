@@ -38,13 +38,13 @@ func generate_terrain() -> void:
 
             var color: Color
             if h < 0.22:
-                color = Color(0.02, 0.10, 0.02)      # deep dark green valley
+                color = Color(0.01, 0.12, 0.01)      # very dark green
             elif h < 0.40:
-                color = Color(0.06, 0.22, 0.05)
+                color = Color(0.05, 0.25, 0.04)
             elif h < 0.60:
-                color = Color(0.15, 0.32, 0.10)
+                color = Color(0.12, 0.35, 0.08)
             else:
-                color = Color(0.28, 0.40, 0.15)      # brighter hills
+                color = Color(0.25, 0.42, 0.12)      # clearly visible hills
 
             img.set_pixel(x, y, color)
 
