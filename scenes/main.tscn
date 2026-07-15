@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
+
+[ext_resource type="Script" path="res://scripts/terrain_generator.gd" id="1_terrain"]
+[ext_resource type="Script" path="res://scripts/utm_grid_overlay.gd" id="2_grid"]
+[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="3_cam"]
+[ext_resource type="Script" path="res://scripts/mouse_coord_display.gd" id="4_coord"]
+
+[node name="Main" type="Node2D"]
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="TerrainSprite" type="Sprite2D" parent="World"]
+script = ExtResource("1_terrain")
+
+[node name="GridOverlay" type="Node2D" parent="World"]
+script = ExtResource("2_grid")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("3_cam")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="CoordLabel" type="Label" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 12.0
+offset_right = 300.0
+offset_bottom = 50.0
+grow_horizontal = 2
+text = "GRID 32U 512000 5480000   H: ---m"
+script = ExtResource("4_coord")
+grid_overlay_path = NodePath("../../World/GridOverlay")
+terrain_sprite_path = NodePath("../../World/TerrainSprite")
+
+[node name="Vignette" type="ColorRect" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.06, 0.02, 0.35)
+mouse_filter = 2
