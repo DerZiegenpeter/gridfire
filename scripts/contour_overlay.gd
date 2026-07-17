@@ -4,14 +4,14 @@ class_name ContourOverlay
 @export var map_size: Vector2i = Vector2i(2000, 2000)
 @export var terrain_path: NodePath = NodePath("../TerrainSprite")
 
-@export var contour_interval: float = 20.0          # normale Höhenlinie alle 20 m
-@export var index_interval: float = 100.0           # dicke Index-Linie alle 100 m
-@export var sample_step: int = 6                    # Pixel-Schritt (kleiner = glatter, aber langsamer)
+@export var contour_interval: float = 20.0
+@export var index_interval: float = 100.0
+@export var sample_step: int = 5
 
-@export var normal_color: Color = Color(0.08, 0.18, 0.08, 0.75)
-@export var index_color: Color = Color(0.05, 0.12, 0.05, 0.95)
-@export var normal_width: float = 1.1
-@export var index_width: float = 2.2
+@export var normal_color: Color = Color(0.12, 0.22, 0.10, 0.70)
+@export var index_color: Color = Color(0.08, 0.15, 0.06, 0.92)
+@export var normal_width: float = 1.15
+@export var index_width: float = 2.35
 
 var terrain: TerrainGenerator
 var contour_lines: Array[PackedVector2Array] = []
@@ -20,13 +20,14 @@ var is_index: Array[bool] = []
 func _ready() -> void:
 	if terrain_path:
 		terrain = get_node_or_null(terrain_path) as TerrainGenerator
-	# Warte kurz, bis das Terrain seine Noise erzeugt hat
+	# Warten bis Terrain (inkl. Erosion) fertig ist
+	await get_tree().process_frame
 	await get_tree().process_frame
 	_generate_contours()
 	queue_redraw()
 
 func _generate_contours() -> void:
-	if not terrain or not terrain.noise:
+	if not terrain or terrain.heights.is_empty():
 		return
 
 	contour_lines.clear()
@@ -35,7 +36,6 @@ func _generate_contours() -> void:
 	var min_h: float = terrain.min_height_m
 	var max_h: float = terrain.max_height_m
 
-	# Alle Höhenstufen erzeugen
 	var levels: Array[float] = []
 	var h := ceil(min_h / contour_interval) * contour_interval
 	while h <= max_h:
@@ -53,7 +53,6 @@ func _extract_isolines(level: float, is_idx: bool) -> void:
 
 	for y in range(0, h - step, step):
 		for x in range(0, w - step, step):
-			# 4 Ecken des Zellenquadratss
 			var h00 := terrain.get_height_meters(Vector2(x, y))
 			var h10 := terrain.get_height_meters(Vector2(x + step, y))
 			var h01 := terrain.get_height_meters(Vector2(x, y + step))
@@ -61,13 +60,11 @@ func _extract_isolines(level: float, is_idx: bool) -> void:
 
 			var points: Array[Vector2] = []
 
-			# Kanten prüfen (linear interpolieren)
 			_check_edge(Vector2(x, y), h00, Vector2(x + step, y), h10, level, points)
 			_check_edge(Vector2(x + step, y), h10, Vector2(x + step, y + step), h11, level, points)
 			_check_edge(Vector2(x + step, y + step), h11, Vector2(x, y + step), h01, level, points)
 			_check_edge(Vector2(x, y + step), h01, Vector2(x, y), h00, level, points)
 
-			# Genau 2 Schnittpunkte → eine Linie zeichnen
 			if points.size() >= 2:
 				var poly := PackedVector2Array([points[0], points[1]])
 				contour_lines.append(poly)
@@ -75,8 +72,8 @@ func _extract_isolines(level: float, is_idx: bool) -> void:
 
 func _check_edge(p1: Vector2, h1: float, p2: Vector2, h2: float, level: float, points: Array[Vector2]) -> void:
 	if (h1 < level and h2 >= level) or (h1 >= level and h2 < level):
-		var t := (level - h1) / (h2 - h1)
-		points.append(p1.lerp(p2, t))
+		var t := (level - h1) / (h2 - h1 + 0.00001)
+		points.append(p1.lerp(p2, clamp(t, 0.0, 1.0)))
 
 func _draw() -> void:
 	for i in contour_lines.size():

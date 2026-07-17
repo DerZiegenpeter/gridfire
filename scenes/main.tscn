@@ -9,7 +9,7 @@
 [node name="Main" type="Node2D"]
 
 [node name="BlackBackground" type="ColorRect" parent="."]
-color = Color(0.75, 0.82, 0.7, 1)
+color = Color(0.78, 0.84, 0.72, 1)
 
 [node name="World" type="Node2D" parent="."]
 
