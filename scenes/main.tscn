@@ -1,10 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
+[gd_scene load_steps=10 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
 
 [ext_resource type="Script" path="res://scripts/terrain_generator.gd" id="1_terrain"]
 [ext_resource type="Script" path="res://scripts/utm_grid_overlay.gd" id="2_grid"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="3_cam"]
 [ext_resource type="Script" path="res://scripts/mouse_coord_display.gd" id="4_coord"]
 [ext_resource type="Script" path="res://scripts/b_stelle.gd" id="5_bstelle"]
+[ext_resource type="Script" path="res://scripts/feuerleit.gd" id="6_feuerleit"]
+[ext_resource type="Script" path="res://scripts/haubitze.gd" id="7_haubitze"]
+[ext_resource type="Script" path="res://scripts/mission_controller.gd" id="8_mission"]
+[ext_resource type="Script" path="res://scripts/briefing_ui.gd" id="9_briefing"]
 
 [node name="Main" type="Node2D"]
 
@@ -25,8 +29,25 @@ terrain_generator_path = NodePath("../TerrainSprite")
 z_index = 10
 script = ExtResource("5_bstelle")
 
+[node name="Feuerleit" type="Node2D" parent="World"]
+z_index = 10
+script = ExtResource("6_feuerleit")
+
+[node name="Haubitze1" type="Node2D" parent="World"]
+z_index = 10
+script = ExtResource("7_haubitze")
+zug_nummer = 1
+
+[node name="Haubitze2" type="Node2D" parent="World"]
+z_index = 10
+script = ExtResource("7_haubitze")
+zug_nummer = 2
+
 [node name="Camera2D" type="Camera2D" parent="."]
 script = ExtResource("3_cam")
+
+[node name="MissionController" type="Node" parent="."]
+script = ExtResource("8_mission")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
@@ -43,3 +64,47 @@ text = "32U 512000 5480000   H: ---m"
 script = ExtResource("4_coord")
 grid_overlay_path = NodePath("../../World/GridOverlay")
 terrain_sprite_path = NodePath("../../World/TerrainSprite")
+
+[node name="BriefingPanel" type="PanelContainer" parent="HUD"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -280.0
+offset_right = 340.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("9_briefing")
+
+[node name="Margin" type="MarginContainer" parent="HUD/BriefingPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="HUD/BriefingPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="HUD/BriefingPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 0.4, 1)
+theme_override_font_sizes/font_size = 20
+text = "LAGEVORTRAG / BRIEFING"
+horizontal_alignment = 1
+
+[node name="Body" type="RichTextLabel" parent="HUD/BriefingPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 380)
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+scroll_active = true
+
+[node name="CloseBtn" type="Button" parent="HUD/BriefingPanel/Margin/VBox"]
+layout_mode = 2
+text = "VERSTANDEN – FEUERBEREITSCHAFT HERSTELLEN"
