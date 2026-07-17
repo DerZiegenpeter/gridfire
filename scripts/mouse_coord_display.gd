@@ -3,7 +3,7 @@ extends Label
 @export var grid_overlay_path: NodePath = "../../../World/GridOverlay"
 @export var terrain_sprite_path: NodePath = "../../../World/TerrainSprite"
 
-@export var map_size: Vector2i = Vector2i(2048, 2048)
+@export var map_size: Vector2i = Vector2i(2000, 2000)
 
 var grid_overlay: Node2D
 var terrain_sprite: Sprite2D
@@ -12,7 +12,7 @@ func _ready() -> void:
 	grid_overlay = get_node_or_null(grid_overlay_path)
 	terrain_sprite = get_node_or_null(terrain_sprite_path)
 
-	text = "GRID 32U 512000 5480000   H: ---m"
+	text = "32U 512000 5480000   H: ---m"
 	add_theme_color_override("font_color", Color(0.2, 1.0, 0.5))
 	add_theme_font_size_override("font_size", 22)
 
@@ -23,16 +23,19 @@ func _process(_delta: float) -> void:
 
 	var world_pos := cam.get_global_mouse_position()
 
-	# Clamp to map bounds
-	world_pos.x = clamp(world_pos.x, 0, map_size.x)
-	world_pos.y = clamp(world_pos.y, 0, map_size.y)
+	# Streng nur innerhalb der Karte Höhen anzeigen
+	var inside := world_pos.x >= 0.0 and world_pos.x <= map_size.x and world_pos.y >= 0.0 and world_pos.y <= map_size.y
 
 	var utm_text := ""
 	if grid_overlay.has_method("world_to_utm_string"):
-		utm_text = grid_overlay.world_to_utm_string(world_pos)
+		# UTM trotzdem anzeigen (geclamped), Höhe nur innen
+		var clamped := world_pos
+		clamped.x = clamp(clamped.x, 0.0, float(map_size.x))
+		clamped.y = clamp(clamped.y, 0.0, float(map_size.y))
+		utm_text = grid_overlay.world_to_utm_string(clamped)
 
 	var height_text := "   H: ---m"
-	if terrain_sprite and terrain_sprite.has_method("get_height_meters"):
+	if inside and terrain_sprite and terrain_sprite.has_method("get_height_meters"):
 		var h: float = terrain_sprite.get_height_meters(world_pos)
 		height_text = "   H: %dm" % int(round(h))
 
