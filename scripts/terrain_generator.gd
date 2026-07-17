@@ -4,13 +4,13 @@ class_name TerrainGenerator
 
 @export var map_size: Vector2i = Vector2i(2000, 2000)
 @export var noise_seed: int = 1337
-@export var frequency: float = 0.0022
+@export var frequency: float = 0.0018
 @export var octaves: int = 4
-@export var lacunarity: float = 2.0
-@export var gain: float = 0.45
+@export var lacunarity: float = 2.1
+@export var gain: float = 0.42
 
-@export var min_height_m: float = 100.0
-@export var max_height_m: float = 380.0
+@export var min_height_m: float = 110.0
+@export var max_height_m: float = 360.0
 
 var noise: FastNoiseLite
 
@@ -30,10 +30,10 @@ func generate_terrain() -> void:
 
 	var img := Image.create(map_size.x, map_size.y, false, Image.FORMAT_RGB8)
 
-	# Sanftere, kontinuierliche Farbverläufe statt harter Bänder
-	var col_low := Color(0.04, 0.18, 0.05)
-	var col_mid := Color(0.12, 0.32, 0.09)
-	var col_high := Color(0.28, 0.45, 0.16)
+	# Sehr dezente, helle Grundfarbe (damit die Höhenlinien klar stehen)
+	var col_low  := Color(0.78, 0.86, 0.72)   # helles, weiches Grün
+	var col_mid  := Color(0.72, 0.82, 0.65)
+	var col_high := Color(0.68, 0.78, 0.58)
 
 	for y in map_size.y:
 		for x in map_size.x:
@@ -50,7 +50,6 @@ func generate_terrain() -> void:
 
 	terrain_texture = ImageTexture.create_from_image(img)
 
-	# Map liegt exakt von (0,0) bis (2000,2000) = 10 km × 10 km
 	self.texture = terrain_texture
 	self.position = Vector2.ZERO
 	self.centered = false
