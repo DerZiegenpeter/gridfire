@@ -11,12 +11,12 @@ extends Node2D
 
 @export var terrain_generator_path: NodePath
 
-# Gewünschte Dicke auf dem Bildschirm in Pixeln
-@export var major_screen_width: float = 1.4
-@export var minor_screen_width: float = 0.8
+@export var major_screen_width: float = 1.3
+@export var minor_screen_width: float = 0.7
 
 var terrain_generator: TerrainGenerator
 var label_font: Font
+var last_zoom: float = -1.0
 
 func _ready() -> void:
 	label_font = ThemeDB.fallback_font
@@ -25,8 +25,14 @@ func _ready() -> void:
 	queue_redraw()
 
 func _process(_delta: float) -> void:
-	# Bei Zoom-Änderung neu zeichnen, damit die Dicke stimmt
-	queue_redraw()
+	var cam := get_viewport().get_camera_2d()
+	if cam == null:
+		return
+	var z: float = cam.zoom.x
+	# Nur neu zeichnen wenn sich der Zoom wirklich geändert hat
+	if absf(z - last_zoom) > 0.001:
+		last_zoom = z
+		queue_redraw()
 
 func _draw() -> void:
 	var major_px := int(major_grid_meters / meters_per_pixel)
@@ -35,7 +41,6 @@ func _draw() -> void:
 	var cam := get_viewport().get_camera_2d()
 	var z: float = maxf(cam.zoom.x, 0.01) if cam else 1.0
 
-	# Welt-Breite so berechnen, dass sie auf dem Bildschirm konstant bleibt
 	var major_w: float = major_screen_width / z
 	var minor_w: float = minor_screen_width / z
 

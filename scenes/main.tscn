@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
+[gd_scene load_steps=5 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
 
 [ext_resource type="Script" path="res://scripts/terrain_generator.gd" id="1_terrain"]
 [ext_resource type="Script" path="res://scripts/utm_grid_overlay.gd" id="2_grid"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="3_cam"]
 [ext_resource type="Script" path="res://scripts/mouse_coord_display.gd" id="4_coord"]
-[ext_resource type="Script" path="res://scripts/contour_overlay.gd" id="5_contour"]
 
 [node name="Main" type="Node2D"]
 
@@ -15,11 +14,6 @@ color = Color(0.78, 0.84, 0.72, 1)
 
 [node name="TerrainSprite" type="Sprite2D" parent="World"]
 script = ExtResource("1_terrain")
-
-[node name="ContourOverlay" type="Node2D" parent="World"]
-z_index = 1
-script = ExtResource("5_contour")
-terrain_path = NodePath("../TerrainSprite")
 
 [node name="GridOverlay" type="Node2D" parent="World"]
 z_index = 2
