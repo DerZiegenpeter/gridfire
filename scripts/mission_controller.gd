@@ -13,54 +13,53 @@ var feuerleit: Node2D
 var haubitzen: Array[Node2D] = []
 
 func _ready() -> void:
-	# Kurz warten bis die Szene da ist
 	await get_tree().process_frame
 	_setup_mission()
 
 func _setup_mission() -> void:
-	# Zufällige aber sinnvolle Feindrichtung (aktuell fest Süd für Vorhersehbarkeit)
+	# Aktuell fest SÜD (kann später randomisiert werden)
 	enemy_direction = AttackDir.SUED
 
 	_place_forces()
 	_show_briefing()
 
 func _place_forces() -> void:
-	var margin := 160.0
 	var w := float(map_size.x)
 	var h := float(map_size.y)
 
-	# Bei Feind aus SÜDEN stehen wir im Norden
-	# B-Stelle weiter vorne (südlicher), Feuerleit + Haubitzen weiter hinten (nördlicher)
+	# WICHTIG:
+	# "Hauptangriffsrichtung SÜD" bedeutet: Der Feind greift nach SÜDEN an.
+	# Er kommt also aus dem NORDEN.
+	# Eigene Kräfte müssen deshalb im SÜDEN der Karte stehen.
 	match enemy_direction:
 		AttackDir.SUED:
-			# Eigene Kräfte in der nördlichen Hälfte
-			var b_pos := Vector2(w * 0.50, h * 0.38)      # etwas vorne
-			var fl_pos := Vector2(w * 0.42, h * 0.22)     # weiter hinten
-			var h1_pos := Vector2(w * 0.58, h * 0.18)
-			var h2_pos := Vector2(w * 0.68, h * 0.25)
-
-			_set_unit_pos("BStelle", b_pos)
-			_set_unit_pos("Feuerleit", fl_pos)
-			_set_unit_pos("Haubitze1", h1_pos)
-			_set_unit_pos("Haubitze2", h2_pos)
-
-		AttackDir.NORD:
-			_set_unit_pos("BStelle", Vector2(w * 0.50, h * 0.62))
+			# Feind kommt aus Norden → eigene Kräfte im Süden
+			# B-Stelle weiter vorne (näher am Feind), Feuerleit + Haubitzen tiefer
+			_set_unit_pos("BStelle",   Vector2(w * 0.50, h * 0.62))
 			_set_unit_pos("Feuerleit", Vector2(w * 0.42, h * 0.78))
 			_set_unit_pos("Haubitze1", Vector2(w * 0.58, h * 0.82))
 			_set_unit_pos("Haubitze2", Vector2(w * 0.68, h * 0.75))
 
-		AttackDir.OST:
-			_set_unit_pos("BStelle", Vector2(w * 0.38, h * 0.50))
-			_set_unit_pos("Feuerleit", Vector2(w * 0.22, h * 0.42))
-			_set_unit_pos("Haubitze1", Vector2(w * 0.18, h * 0.58))
-			_set_unit_pos("Haubitze2", Vector2(w * 0.25, h * 0.68))
+		AttackDir.NORD:
+			# Feind kommt aus Süden → eigene Kräfte im Norden
+			_set_unit_pos("BStelle",   Vector2(w * 0.50, h * 0.38))
+			_set_unit_pos("Feuerleit", Vector2(w * 0.42, h * 0.22))
+			_set_unit_pos("Haubitze1", Vector2(w * 0.58, h * 0.18))
+			_set_unit_pos("Haubitze2", Vector2(w * 0.68, h * 0.25))
 
-		AttackDir.WEST:
-			_set_unit_pos("BStelle", Vector2(w * 0.62, h * 0.50))
+		AttackDir.OST:
+			# Feind kommt aus Westen → eigene Kräfte im Osten
+			_set_unit_pos("BStelle",   Vector2(w * 0.62, h * 0.50))
 			_set_unit_pos("Feuerleit", Vector2(w * 0.78, h * 0.42))
 			_set_unit_pos("Haubitze1", Vector2(w * 0.82, h * 0.58))
 			_set_unit_pos("Haubitze2", Vector2(w * 0.75, h * 0.68))
+
+		AttackDir.WEST:
+			# Feind kommt aus Osten → eigene Kräfte im Westen
+			_set_unit_pos("BStelle",   Vector2(w * 0.38, h * 0.50))
+			_set_unit_pos("Feuerleit", Vector2(w * 0.22, h * 0.42))
+			_set_unit_pos("Haubitze1", Vector2(w * 0.18, h * 0.58))
+			_set_unit_pos("Haubitze2", Vector2(w * 0.25, h * 0.68))
 
 func _set_unit_pos(node_name: String, pos: Vector2) -> void:
 	var node := get_node_or_null("../World/" + node_name)
@@ -78,7 +77,7 @@ func _show_briefing() -> void:
 func _dir_to_text(dir: AttackDir) -> String:
 	match dir:
 		AttackDir.NORD: return "NORD"
-		AttackDir.OST: return "OST"
+		AttackDir.OST:  return "OST"
 		AttackDir.SUED: return "SÜD"
 		AttackDir.WEST: return "WEST"
 	return "UNBEKANNT"
