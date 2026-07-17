@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
+[gd_scene load_steps=11 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
 
 [ext_resource type="Script" path="res://scripts/terrain_generator.gd" id="1_terrain"]
 [ext_resource type="Script" path="res://scripts/utm_grid_overlay.gd" id="2_grid"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://scripts/haubitze.gd" id="7_haubitze"]
 [ext_resource type="Script" path="res://scripts/mission_controller.gd" id="8_mission"]
 [ext_resource type="Script" path="res://scripts/briefing_ui.gd" id="9_briefing"]
+[ext_resource type="Script" path="res://scripts/time_manager.gd" id="10_time"]
 
 [node name="Main" type="Node2D"]
 
@@ -64,6 +65,36 @@ text = "32U 512000 5480000   H: ---m"
 script = ExtResource("4_coord")
 grid_overlay_path = NodePath("../../World/GridOverlay")
 terrain_sprite_path = NodePath("../../World/TerrainSprite")
+
+[node name="TimeDisplay" type="CanvasLayer" parent="."]
+layer = 10
+script = ExtResource("10_time")
+
+[node name="TimePanel" type="PanelContainer" parent="TimeDisplay"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -210.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = 52.0
+grow_horizontal = 0
+
+[node name="HBox" type="HBoxContainer" parent="TimeDisplay/TimePanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TimeLabel" type="Label" parent="TimeDisplay/TimePanel/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.5, 1)
+theme_override_font_sizes/font_size = 22
+text = "00:00:00"
+horizontal_alignment = 1
+
+[node name="PauseBtn" type="Button" parent="TimeDisplay/TimePanel/HBox"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "⏸ PAUSE"
 
 [node name="BriefingPanel" type="PanelContainer" parent="HUD"]
 anchors_preset = 8
