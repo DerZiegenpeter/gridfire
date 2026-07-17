@@ -49,10 +49,11 @@ func generate_terrain() -> void:
 
     terrain_texture = ImageTexture.create_from_image(img)
     
-    # FIX: Da das Script jetzt am TerrainSprite (Sprite2D) hängt, wenden wir die Textur direkt auf uns selbst an
+    # Map liegt korrekt von (0,0) bis (map_size)
+    # centered=false + position=ZERO = Top-Left bei Weltkoordinate (0,0)
     self.texture = terrain_texture
     self.position = Vector2.ZERO
-    self.centered = true
+    self.centered = false
 
 func get_height_meters(world_pos: Vector2) -> float:
     if not noise:
