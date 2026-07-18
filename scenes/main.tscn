@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
+[gd_scene load_steps=12 format=3 uid="uid://b2v8k3p9m4x7q2r5"]
 
 [ext_resource type="Script" path="res://scripts/terrain_generator.gd" id="1_terrain"]
 [ext_resource type="Script" path="res://scripts/utm_grid_overlay.gd" id="2_grid"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/mission_controller.gd" id="8_mission"]
 [ext_resource type="Script" path="res://scripts/briefing_ui.gd" id="9_briefing"]
 [ext_resource type="Script" path="res://scripts/time_manager.gd" id="10_time"]
+[ext_resource type="Script" path="res://scripts/call_for_fire_ui.gd" id="11_callfire"]
 
 [node name="Main" type="Node2D"]
 
@@ -95,6 +96,40 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 text = "⏸ PAUSE"
+
+[node name="CallForFireUI" type="PanelContainer" parent="HUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -340.0
+offset_top = -420.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("11_callfire")
+
+[node name="Margin" type="MarginContainer" parent="HUD/CallForFireUI"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="HUD/CallForFireUI/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Log" type="RichTextLabel" parent="HUD/CallForFireUI/Margin/VBox"]
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = true
+
+[node name="Options" type="VBoxContainer" parent="HUD/CallForFireUI/Margin/VBox"]
+layout_mode = 2
 
 [node name="BriefingPanel" type="PanelContainer" parent="HUD"]
 anchors_preset = 8
